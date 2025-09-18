@@ -154,9 +154,11 @@ function displayPointsLeaderboard(sortedStats) {
         } else if (position === 3) {
             positionEmoji = "🥉";
         } else if (position === 4) {
-            positionEmoji = "🫏";
-        } else if (position === 5) {
             positionEmoji = "🫃";
+        } else if (position === 5) {
+            positionEmoji = "🫏";
+        } else {
+            positionEmoji = "♿";
         }
 
         const playerDiv = document.createElement("div");
