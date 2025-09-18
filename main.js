@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", loadData);
 
 async function loadData() {
     try {
-        const res = await fetch("data.json");
+        const res = await fetch(`data.json?t=${Date.now()}`);
         data = await res.json(); // Store globally
 
         displayLeaderboard(data.matches, data.guesses);
