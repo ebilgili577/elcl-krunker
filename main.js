@@ -208,7 +208,7 @@ function toggleLeaderboard() {
 
     if (restBoard.classList.contains("hidden")) {
         restBoard.classList.remove("hidden");
-        button.textContent = "özürlüleri gizle";
+        button.textContent = "futbol cahillerini gizle";
     } else {
         restBoard.classList.add("hidden");
         button.textContent = "diğerleri";
