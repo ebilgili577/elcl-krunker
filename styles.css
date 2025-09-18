@@ -177,6 +177,8 @@ body {
     align-items: center;
     gap: 0.375rem;
     width: 5rem;
+    flex: 1;
+    justify-content: center;
 }
 
 @media (min-width: 640px) {
@@ -186,13 +188,6 @@ body {
     }
 }
 
-.team-info-left {
-    margin-left: 1rem;
-}
-
-.team-info-right {
-    margin-right: 1rem;
-}
 
 .team-logo-container {
     width: 2rem;
