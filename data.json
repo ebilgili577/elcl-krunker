@@ -3,92 +3,74 @@
     "Galatasaray": {
       "name": "Galatasaray",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/915px-Galatasaray_Sports_Club_Logo.svg.png",
-      "country": "TR"
     },
     "Fenerbahçe": {
       "name": "Fenerbahçe",
       "logo": "https://upload.wikimedia.org/wikipedia/de/e/e6/Fenerbahce_Spor_Kulubu.svg",
-      "country": "TR"
     },
     "Eintracht Frankfurt": {
       "name": "Eintracht Frankfurt",
       "logo": "https://upload.wikimedia.org/wikipedia/de/3/32/Logo_Eintracht_Frankfurt_1998.svg",
-      "country": "DE"
     },
     "Liverpool": {
       "name": "Liverpool",
       "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Liverpool_FC.svg/100px-Liverpool_FC.svg.png",
-      "country": "GB"
     },
     "Bodø/Glimt": {
       "name": "Bodø/Glimt",
       "logo": "https://upload.wikimedia.org/wikipedia/en/8/8d/FK_Bodo_Glimt_logo.svg",
-      "country": "NO"
     },
     "Ajax": {
       "name": "Ajax",
       "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/7/79/Ajax_Amsterdam.svg/100px-Ajax_Amsterdam.svg.png",
-      "country": "NL"
     },
     "Union SG": {
       "name": "Union SG",
       "logo": "https://cdn.worldvectorlogo.com/logos/union-saint-gilloise.svg",
-      "country": "BE"
     },
     "Monaco": {
       "name": "Monaco",
       "logo": "https://upload.wikimedia.org/wikipedia/fr/5/58/Logo_AS_Monaco_FC_-_2021.svg",
-      "country": "MC"
     },
     "Atletico Madrid": {
       "name": "Atletico Madrid",
       "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c1/Atletico_Madrid_logo.svg/100px-Atletico_Madrid_logo.svg.png",
-      "country": "ES"
     },
     "Manchester City": {
       "name": "Manchester City",
       "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/100px-Manchester_City_FC_badge.svg.png",
-      "country": "GB"
     },
     "GNK Dinamo": {
       "name": "GNK Dinamo",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/5/56/Logo_GNK_Dinamo_Zagreb_%282019%29.svg",
-      "country": "HR"
     },
     "Nice": {
       "name": "Nice",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/1/13/OGC_Nice_%28simplified_logo%29.svg",
-      "country": "FR"
     },
     "Stuttgart": {
       "name": "Stuttgart",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/e/eb/VfB_Stuttgart_1893_Logo.svg",
-      "country": "DE"
     },
     "Viktoria Plzeň": {
       "name": "Viktoria Plzeň",
       "logo": "https://upload.wikimedia.org/wikipedia/de/0/01/Viktoria.svg",
-      "country": "CZ"
     },
     "Ferencváros": {
       "name": "Ferencváros",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/3/37/Ferencvarosi_TC.svg",
-      "country": "HU"
     },
     "Brann": {
       "name": "Brann",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/7/71/Brann_logo.svg",
-      "country": "NO"
     },
     "Aston Villa": {
       "name": "Aston Villa",
       "logo": "https://upload.wikimedia.org/wikipedia/de/9/9f/Aston_Villa_logo.svg",
-      "country": "GB"
     },
     "FCSB": {
       "name": "FCSB",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/7/78/Fcsb-logo.svg",
-      "country": "RO"
     }
   },
   "matches": [
