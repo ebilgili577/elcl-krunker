@@ -1,5 +1,4 @@
 let data; // global data
-let isMergedView = false;
 
 
 function formatDateEuropean(dateString) {
@@ -43,16 +42,10 @@ async function loadData() {
         const res = await fetch("data.json");
         data = await res.json(); // Store globally
 
-        const galatasarayMatches = getTeamMatches(data, "Galatasaray");
-        const fenerbahceMatches = getTeamMatches(data, "Fenerbahçe");
-
-        displayMatches(galatasarayMatches, data.guesses, "galatasaray-matches");
-        displayMatches(fenerbahceMatches, data.guesses, "fenerbahce-matches");
-
         displayLeaderboard(data.matches, data.guesses);
 
-        // restore saved view state
-        restoreViewState();
+        // display all matches in merged view
+        displayAllMatches();
         
         // fixed 1 second loading time
         setTimeout(hideLoadingOverlay, 500);
@@ -75,135 +68,8 @@ function hideLoadingOverlay() {
     }
 }
 
-function restoreViewState() {
-    const savedViewState = localStorage.getItem('viewToggleState');
-    if (savedViewState === 'merged') {
-        isMergedView = true;
-        const separateTeamsView = document.getElementById("separate-teams-view");
-        const mergedMatchesView = document.getElementById("merged-matches-view");
-        const toggleBtn = document.getElementById("view-toggle-btn");
 
-        separateTeamsView.classList.add("hidden");
-        mergedMatchesView.classList.remove("hidden");
-        toggleBtn.textContent = "ayır";
-        displayAllMatches();
-    }
-}
 
-function displayMatches(matches, guesses, containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = "";
-
-    matches.forEach(match => {
-        const isCompleted = match.result !== null;
-
-        // team info
-        const teamInfo = data.teams[match.team];
-        const opponentInfo = data.teams[match.opponent];
-
-        // card style
-        let cardStyle = "bg-amber-100 border-gray-400";
-        if (isCompleted) {
-            cardStyle = match.result.toLowerCase().includes("win")
-                ? "bg-green-50 border-green-500"
-                : "bg-red-50 border-red-500";
-        }
-
-        // result color
-        let resultColor = "text-muted-foreground";
-        let borderColor = "border-amber-500/50";
-
-        if (isCompleted && match.result !== "null") {
-            const scores = match.result.split('-');
-            const homeScore = parseInt(scores[0]);
-            const awayScore = parseInt(scores[1]);
-
-            if (homeScore === awayScore) {
-                resultColor = "text-slate-400"; // Draw
-                borderColor = "border-slate-400/50";
-            } else {
-                const teamWon = match.home ? homeScore > awayScore : awayScore > homeScore;
-                resultColor = teamWon ? "text-green-800" : "text-red-800";
-                borderColor = teamWon ? "border-green-700/50" : "border-red-700/50";
-            }
-        }
-
-        const matchDiv = document.createElement("div");
-        let cardClasses = "match-card";
-        if (isCompleted) {
-            if (resultColor.includes("green")) cardClasses += " match-card-completed-win";
-            else if (resultColor.includes("red")) cardClasses += " match-card-completed-loss";
-            else if (resultColor.includes("slate")) cardClasses += " match-card-completed-draw";
-        }
-        matchDiv.className = cardClasses;
-
-        // team positions
-        const homeTeam = { name: match.team, logo: teamInfo.logo };
-        const awayTeam = { name: match.opponent, logo: opponentInfo.logo };
-        const leftTeam = match.home ? homeTeam : awayTeam;
-        const rightTeam = match.home ? awayTeam : homeTeam;
-
-        // match info
-        let html = `
-            <div class="match-header">
-                <div class="team-info team-info-left">
-                    <div class="team-logo-container">
-                        <img src="${leftTeam.logo}" alt="${leftTeam.name}" class="team-logo">
-                    </div>
-                    <div class="team-name-container">
-                        <span class="team-name">${leftTeam.name}</span>
-                    </div>
-                </div>
-                <div class="match-score-container">
-                    <div class="match-score ${getScoreColorClass(resultColor)}">
-                        ${isCompleted ? `${match.result}` : "vs"}
-                    </div>
-                    <div class="match-date">
-                        ${formatDateEuropean(match.date)}
-                    </div>
-                    <div class="match-time">
-                        ${getTurkishWeekday(match.date)} ${match.time || "TBD"}
-                    </div>
-                </div>
-                <div class="team-info team-info-right">
-                    <div class="team-logo-container">
-                        <img src="${rightTeam.logo}" alt="${rightTeam.name}" class="team-logo">
-                    </div>
-                    <div class="team-name-container">
-                        <span class="team-name">${rightTeam.name}</span>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // predictions
-        html += `<div class="predictions-grid">`;
-        guesses.forEach(person => {
-            const prediction = person.predictions[match.id];
-            const isCorrect = isCompleted && prediction ? isPredictionCorrect(prediction, match.result, match.home) : false;
-
-            const badgeClasses = getPredictionClasses(isCompleted, prediction, isCorrect);
-            const valueClasses = getPredictionValueClass(isCompleted, prediction, isCorrect);
-
-            html += `<div class="${badgeClasses}">
-                        <div class="prediction-name">${person.name}</div>
-                        <div class="prediction-value ${valueClasses}">${prediction || "-"}</div>
-                    </div>`;
-        });
-        html += `</div>`;
-
-        matchDiv.innerHTML = html;
-        container.appendChild(matchDiv);
-    });
-
-    if (matches.length === 0) {
-        container.innerHTML = '<div class="text-center" style="color: #6b7280;">No matches found</div>';
-    }
-}
-
-// get team matches
-const getTeamMatches = (data, teamName) =>
-    data.matches.filter(match => match.team === teamName);
 
 function isPredictionCorrect(prediction, result, isHome) {
     if (!prediction || !result) return false;
@@ -280,23 +146,17 @@ function displayPointsLeaderboard(sortedStats) {
     sortedStats.forEach((player, index) => {
         const position = index + 1;
         let positionEmoji = "";
-        let cardStyle = "bg-white border-gray-300";
 
         if (position === 1) {
             positionEmoji = "🥇";
-            cardStyle = "bg-gradient-to-r from-yellow-100 to-yellow-200 border-yellow-400";
         } else if (position === 2) {
             positionEmoji = "🥈";
-            cardStyle = "bg-gradient-to-r from-gray-100 to-gray-200 border-gray-400";
         } else if (position === 3) {
             positionEmoji = "🥉";
-            cardStyle = "bg-gradient-to-r from-orange-100 to-orange-200 border-orange-400";
         } else if (position === 4) {
             positionEmoji = "🫏";
-            cardStyle = "bg-gradient-to-r from-amber-100 to-amber-200 border-amber-400";
         } else if (position === 5) {
             positionEmoji = "🫃";
-            cardStyle = "bg-gradient-to-r from-pink-100 to-pink-200 border-pink-400";
         }
 
         const playerDiv = document.createElement("div");
@@ -349,26 +209,6 @@ function toggleLeaderboard() {
     }
 }
 
-function toggleView() {
-    const separateTeamsView = document.getElementById("separate-teams-view");
-    const mergedMatchesView = document.getElementById("merged-matches-view");
-    const toggleBtn = document.getElementById("view-toggle-btn");
-
-    isMergedView = !isMergedView;
-
-    if (isMergedView) {
-        separateTeamsView.classList.add("hidden");
-        mergedMatchesView.classList.remove("hidden");
-        toggleBtn.textContent = "ayır";
-        displayAllMatches();
-        localStorage.setItem('viewToggleState', 'merged');
-    } else {
-        separateTeamsView.classList.remove("hidden");
-        mergedMatchesView.classList.add("hidden");
-        toggleBtn.textContent = "birleştir";
-        localStorage.setItem('viewToggleState', 'separate');
-    }
-}
 
 function displayAllMatches() {
     const container = document.getElementById("all-matches");
@@ -395,7 +235,7 @@ function displayAllMatches() {
     });
 
     // create display
-    const sortedDates = Object.keys(matchesByDate).sort();
+    const sortedDates = Object.keys(matchesByDate).sort((a, b) => a.localeCompare(b));
     sortedDates.forEach(date => {
         const dayMatches = matchesByDate[date];
         const maxMatches = Math.max(dayMatches.galatasaray.length, dayMatches.fenerbahce.length);
@@ -411,42 +251,36 @@ function displayAllMatches() {
     });
 }
 
-function renderMatchCard(match, container) {
-    const teamInfo = data.teams[match.team];
-    const opponentInfo = data.teams[match.opponent];
-    const isCompleted = match.result !== null;
-
-    // result color
-    let resultColor = "match-score-pending";
-    if (isCompleted && match.result !== "null") {
-        const scores = match.result.split('-');
-        const homeScore = parseInt(scores[0]);
-        const awayScore = parseInt(scores[1]);
-
-        if (homeScore === awayScore) {
-            resultColor = "text-slate-400";
-        } else {
-            const teamWon = match.home ? homeScore > awayScore : awayScore > homeScore;
-            resultColor = teamWon ? "text-green-800" : "text-red-800";
-        }
+function getResultColor(match) {
+    if (match.result === null || match.result === "null") {
+        return "match-score-pending";
     }
+    
+    const scores = match.result.split('-');
+    const homeScore = parseInt(scores[0]);
+    const awayScore = parseInt(scores[1]);
 
-    // team positioning
-    const homeTeam = { name: match.team, logo: teamInfo.logo };
-    const awayTeam = { name: match.opponent, logo: opponentInfo.logo };
-    const leftTeam = match.home ? homeTeam : awayTeam;
-    const rightTeam = match.home ? awayTeam : homeTeam;
+    if (homeScore === awayScore) {
+        return "text-slate-400";
+    }
+    
+    const teamWon = match.home ? homeScore > awayScore : awayScore > homeScore;
+    return teamWon ? "text-green-800" : "text-red-800";
+}
 
-    const matchDiv = document.createElement("div");
+function getCardClasses(isCompleted, resultColor) {
     let cardClasses = "match-card";
     if (isCompleted) {
         if (resultColor.includes("green")) cardClasses += " match-card-completed-win";
         else if (resultColor.includes("red")) cardClasses += " match-card-completed-loss";
         else if (resultColor.includes("slate")) cardClasses += " match-card-completed-draw";
     }
-    matchDiv.className = cardClasses;
+    return cardClasses;
+}
 
-    let html = `
+function generateMatchHeader(match, leftTeam, rightTeam, resultColor) {
+    const isCompleted = match.result !== null;
+    return `
         <div class="match-header">
             <div class="team-info team-info-left">
                 <div class="team-logo-container">
@@ -477,9 +311,12 @@ function renderMatchCard(match, container) {
             </div>
         </div>
     `;
+}
 
-    // predictions
-    html += `<div class="predictions-grid">`;
+function generatePredictions(match) {
+    const isCompleted = match.result !== null;
+    let html = `<div class="predictions-grid">`;
+    
     data.guesses.forEach(person => {
         const prediction = person.predictions[match.id];
         const isCorrect = isCompleted && prediction ? isPredictionCorrect(prediction, match.result, match.home) : false;
@@ -492,9 +329,29 @@ function renderMatchCard(match, container) {
                     <div class="prediction-value ${valueClasses}">${prediction || "-"}</div>
                 </div>`;
     });
+    
     html += `</div>`;
+    return html;
+}
 
-    matchDiv.innerHTML = html;
+function renderMatchCard(match, container) {
+    const teamInfo = data.teams[match.team];
+    const opponentInfo = data.teams[match.opponent];
+    const isCompleted = match.result !== null;
+
+    const resultColor = getResultColor(match);
+    const homeTeam = { name: match.team, logo: teamInfo.logo };
+    const awayTeam = { name: match.opponent, logo: opponentInfo.logo };
+    const leftTeam = match.home ? homeTeam : awayTeam;
+    const rightTeam = match.home ? awayTeam : homeTeam;
+
+    const matchDiv = document.createElement("div");
+    matchDiv.className = getCardClasses(isCompleted, resultColor);
+
+    const matchHeader = generateMatchHeader(match, leftTeam, rightTeam, resultColor);
+    const predictions = generatePredictions(match);
+    
+    matchDiv.innerHTML = matchHeader + predictions;
     container.appendChild(matchDiv);
 }
 
