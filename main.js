@@ -78,8 +78,12 @@ function isPredictionCorrect(prediction, result, isHome) {
     const resultMatch = result.match(/(\d+)-(\d+)/);
     if (!resultMatch) return false;
 
-    const teamScore = parseInt(resultMatch[1]); // team score
-    const opponentScore = parseInt(resultMatch[2]); // opponent score
+    const homeScore = parseInt(resultMatch[1]); // home team score
+    const awayScore = parseInt(resultMatch[2]); // away team score
+
+    // determine team score and opponent score based on home/away
+    const teamScore = isHome ? homeScore : awayScore;
+    const opponentScore = isHome ? awayScore : homeScore;
 
     // actual outcome
     let actualOutcome;
