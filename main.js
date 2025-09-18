@@ -35,7 +35,10 @@ function getPredictionValueClass(isCompleted, prediction, isCorrect) {
     return isCorrect ? "prediction-value-correct" : "prediction-value-incorrect";
 }
 
-document.addEventListener("DOMContentLoaded", loadData);
+document.addEventListener("DOMContentLoaded", function() {
+    loadData();
+    initializeTheme();
+});
 
 async function loadData() {
     try {
@@ -359,5 +362,32 @@ function renderMatchCard(match, container) {
     
     matchDiv.innerHTML = matchHeader + predictions;
     container.appendChild(matchDiv);
+}
+
+// Theme functionality
+function initializeTheme() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply saved theme
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+    
+    // Add click event listener
+    themeToggle.addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
 }
 
