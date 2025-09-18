@@ -81,7 +81,7 @@
       "opponent": "Eintracht Frankfurt",
       "date": "2025-09-18",
       "time": "22:00",
-      "result": null
+      "result": "0-1"
     },
     {
       "id": 2,
@@ -327,7 +327,7 @@
     },
     {
       "name": "emir",
-      "predictions":{
+      "predictions": {
         "1": "W",
         "2": "L",
         "3": "W",
