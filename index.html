@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CL Tahminleri</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="main.js" defer></script>
+</head>
+<body>
+    <!-- loading overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">yükleniyor...</div>
+    </div>
+
+    <div class="main-container">
+        <div class="section-spacing">
+
+        <!-- prediction legend -->
+        <div class="prediction-legend">
+            <div class="legend-left">
+                <div class="legend-title">bozo mali için açıklama</div>
+                <div class="legend-meanings">
+                    <div class="legend-item">
+                        <span class="legend-badge legend-badge-win">W</span>
+                        <span class="legend-text">fb/gs kazanır</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-badge legend-badge-draw">D</span>
+                        <span class="legend-text">berabere biter</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-badge legend-badge-loss">L</span>
+                        <span class="legend-text">fb/gs kaybeder</span>
+                    </div>
+                </div>
+                <div class="legend-points">
+                    <span class="legend-text">doğru tahmin başına 3 puan</span>
+                </div>
+            </div>
+            
+
+            <div class="legend-right">
+                <button id="view-toggle-btn" onclick="toggleView()" class="view-toggle-btn">
+                    birleştir
+                </button>
+            </div>
+        </div>
+
+        <!-- matches view container -->
+        <div id="matches-view-container">
+            <!-- separate teams view -->
+            <div id="separate-teams-view" class="matches-container">
+                <!-- galatasaray section -->
+                <div class="team-section">
+                    <div class="team-header">
+                        <h2 class="team-title">gsnin maçları</h2>
+                    </div>
+                    <div id="galatasaray-matches" class="matches-list"></div>
+                </div>
+
+                <!-- fenerbahçe section -->
+                <div class="team-section">
+                    <div class="team-header">
+                        <h2 class="team-title">fenerin maçları</h2>
+                    </div>
+                    <div id="fenerbahce-matches" class="matches-list"></div>
+                </div>
+            </div>
+
+            <!-- merged matches view -->
+            <div id="merged-matches-view" class="merged-matches-container hidden">
+                <div class="team-header">
+                    <h2 class="team-title text-center">gs ve fb'nin maçları</h2>
+                </div>
+                <div id="all-matches" class="matches-list"></div>
+            </div>
+        </div>
+
+        <!-- leaderboard section -->
+        <div class="leaderboard-section">
+            <div class="leaderboard-header">
+                <h2 class="leaderboard-title">leaderboard</h2>
+            </div>
+            <div class="leaderboard-content">
+                <div class="leaderboard-top">
+                    <div id="top-players"></div>
+                    <div id="remaining-players" class="leaderboard-rest hidden"></div>
+                    <button id="show-more-players-btn" onclick="toggleLeaderboard()" class="show-more-btn">
+                        diğerleri
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+</body>
+</html>

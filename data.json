@@ -1,0 +1,347 @@
+{
+  "teams": {
+    "Galatasaray": {
+      "name": "Galatasaray",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/915px-Galatasaray_Sports_Club_Logo.svg.png",
+      "country": "TR"
+    },
+    "Fenerbahçe": {
+      "name": "Fenerbahçe",
+      "logo": "https://upload.wikimedia.org/wikipedia/de/e/e6/Fenerbahce_Spor_Kulubu.svg",
+      "country": "TR"
+    },
+    "Eintracht Frankfurt": {
+      "name": "Eintracht Frankfurt",
+      "logo": "https://upload.wikimedia.org/wikipedia/de/3/32/Logo_Eintracht_Frankfurt_1998.svg",
+      "country": "DE"
+    },
+    "Liverpool": {
+      "name": "Liverpool",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Liverpool_FC.svg/100px-Liverpool_FC.svg.png",
+      "country": "GB"
+    },
+    "Bodø/Glimt": {
+      "name": "Bodø/Glimt",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/8/8d/FK_Bodo_Glimt_logo.svg",
+      "country": "NO"
+    },
+    "Ajax": {
+      "name": "Ajax",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/7/79/Ajax_Amsterdam.svg/100px-Ajax_Amsterdam.svg.png",
+      "country": "NL"
+    },
+    "Union SG": {
+      "name": "Union SG",
+      "logo": "https://cdn.worldvectorlogo.com/logos/union-saint-gilloise.svg",
+      "country": "BE"
+    },
+    "Monaco": {
+      "name": "Monaco",
+      "logo": "https://upload.wikimedia.org/wikipedia/fr/5/58/Logo_AS_Monaco_FC_-_2021.svg",
+      "country": "MC"
+    },
+    "Atletico Madrid": {
+      "name": "Atletico Madrid",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c1/Atletico_Madrid_logo.svg/100px-Atletico_Madrid_logo.svg.png",
+      "country": "ES"
+    },
+    "Manchester City": {
+      "name": "Manchester City",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/100px-Manchester_City_FC_badge.svg.png",
+      "country": "GB"
+    },
+    "GNK Dinamo": {
+      "name": "GNK Dinamo",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/5/56/Logo_GNK_Dinamo_Zagreb_%282019%29.svg",
+      "country": "HR"
+    },
+    "Nice": {
+      "name": "Nice",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/1/13/OGC_Nice_%28simplified_logo%29.svg",
+      "country": "FR"
+    },
+    "Stuttgart": {
+      "name": "Stuttgart",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/e/eb/VfB_Stuttgart_1893_Logo.svg",
+      "country": "DE"
+    },
+    "Viktoria Plzeň": {
+      "name": "Viktoria Plzeň",
+      "logo": "https://upload.wikimedia.org/wikipedia/de/0/01/Viktoria.svg",
+      "country": "CZ"
+    },
+    "Ferencváros": {
+      "name": "Ferencváros",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/3/37/Ferencvarosi_TC.svg",
+      "country": "HU"
+    },
+    "Brann": {
+      "name": "Brann",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/7/71/Brann_logo.svg",
+      "country": "NO"
+    },
+    "Aston Villa": {
+      "name": "Aston Villa",
+      "logo": "https://upload.wikimedia.org/wikipedia/de/9/9f/Aston_Villa_logo.svg",
+      "country": "GB"
+    },
+    "FCSB": {
+      "name": "FCSB",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/7/78/Fcsb-logo.svg",
+      "country": "RO"
+    }
+  },
+  "matches": [
+    {
+      "id": 1,
+      "team": "Galatasaray",
+      "home": false,
+      "opponent": "Eintracht Frankfurt",
+      "date": "2025-09-18",
+      "time": "22:00",
+      "result": "0-0"
+    },
+    {
+      "id": 2,
+      "team": "Galatasaray",
+      "home": true,
+      "opponent": "Liverpool",
+      "date": "2025-09-30",
+      "time": "22:00",
+      "result": null
+    },
+    {
+      "id": 3,
+      "team": "Galatasaray",
+      "home": false,
+      "opponent": "Bodø/Glimt",
+      "date": "2025-10-22",
+      "time": "19:45",
+      "result": null
+    },
+    {
+      "id": 4,
+      "team": "Galatasaray",
+      "home": true,
+      "opponent": "Ajax",
+      "date": "2025-11-05",
+      "time": "22:00",
+      "result": null
+    },
+    {
+      "id": 5,
+      "team": "Galatasaray",
+      "home": false,
+      "opponent": "Union SG",
+      "date": "2025-11-25",
+      "time": "19:45",
+      "result": null
+    },
+    {
+      "id": 6,
+      "team": "Galatasaray",
+      "home": true,
+      "opponent": "Monaco",
+      "date": "2025-12-09",
+      "time": "22:00",
+      "result": null
+    },
+    {
+      "id": 7,
+      "team": "Galatasaray",
+      "home": false,
+      "opponent": "Atletico Madrid",
+      "date": "2025-10-21",
+      "time": "19:45",
+      "result": null
+    },
+    {
+      "id": 8,
+      "team": "Galatasaray",
+      "home": true,
+      "opponent": "Manchester City",
+      "date": "2026-01-28",
+      "time": "22:00",
+      "result": null
+    },
+    {
+      "id": 9,
+      "team": "Fenerbahçe",
+      "home": false,
+      "opponent": "GNK Dinamo",
+      "date": "2025-09-21",
+      "time": "22:00",
+      "result": null
+    },
+    {
+      "id": 10,
+      "team": "Fenerbahçe",
+      "home": true,
+      "opponent": "Nice",
+      "date": "2025-10-06",
+      "time": "19:45",
+      "result": null
+    },
+    {
+      "id": 11,
+      "team": "Fenerbahçe",
+      "home": false,
+      "opponent": "Stuttgart",
+      "date": "2025-10-22",
+      "time": "19:45",
+      "result": null
+    },
+    {
+      "id": 12,
+      "team": "Fenerbahçe",
+      "home": true,
+      "opponent": "Viktoria Plzeň",
+      "date": "2025-11-06",
+      "time": "22:00",
+      "result": null
+    },
+    {
+      "id": 13,
+      "team": "Fenerbahçe",
+      "home": false,
+      "opponent": "Ferencváros",
+      "date": "2025-11-20",
+      "time": "19:45",
+      "result": null
+    },
+    {
+      "id": 14,
+      "team": "Fenerbahçe",
+      "home": true,
+      "opponent": "Brann",
+      "date": "2025-12-03",
+      "time": "22:00",
+      "result": null
+    },
+    {
+      "id": 15,
+      "team": "Fenerbahçe",
+      "home": false,
+      "opponent": "Aston Villa",
+      "date": "2025-12-17",
+      "time": "19:45",
+      "result": null
+    },
+    {
+      "id": 16,
+      "team": "Fenerbahçe",
+      "home": true,
+      "opponent": "FCSB",
+      "date": "2026-01-11",
+      "time": "22:00",
+      "result": null
+    }
+  ],
+  "guesses": [
+    {
+      "name": "bozo",
+      "predictions": {
+        "1": "W",
+        "2": "L",
+        "3": "W",
+        "4": "L",
+        "5": "W",
+        "6": "D",
+        "7": "L",
+        "8": "L",
+        "9": "D",
+        "10": "L",
+        "11": "L",
+        "12": "D",
+        "13": "W",
+        "14": "L",
+        "15": "L",
+        "16": "W"
+      }
+    },
+    {
+      "name": "sert",
+      "predictions": {
+        "1": "D",
+        "2": "W",
+        "3": "D",
+        "4": "W",
+        "5": "W",
+        "6": "W",
+        "7": "L",
+        "8": "W",
+        "9": "D",
+        "10": "L",
+        "11": "L",
+        "12": "D",
+        "13": "W",
+        "14": "L",
+        "15": "L",
+        "16": "W"
+      }
+    },
+    {
+      "name": "baran",
+      "predictions": {
+        "1": "D",
+        "2": "L",
+        "3": "W",
+        "4": "D",
+        "5": "W",
+        "6": "L",
+        "7": "L",
+        "8": "L",
+        "9": "W",
+        "10": "D",
+        "11": "L",
+        "12": "W",
+        "13": "W",
+        "14": "W",
+        "15": "W",
+        "16": "W"
+      }
+    },
+    {
+      "name": "eko",
+      "predictions": {
+        "1": "D",
+        "2": "L",
+        "3": "W",
+        "4": "L",
+        "5": "W",
+        "6": "W",
+        "7": "D",
+        "8": "L",
+        "9": "L",
+        "10": "W",
+        "11": "D",
+        "12": "W",
+        "13": "W",
+        "14": "W",
+        "15": "L",
+        "16": "D"
+      }
+    },
+    {
+      "name": "ekb",
+      "predictions": {
+        "1": "W",
+        "2": "W",
+        "3": "D",
+        "4": "W",
+        "5": "W",
+        "6": "W",
+        "7": "D",
+        "8": "W",
+        "9": "D",
+        "10": "D",
+        "11": "W",
+        "12": "D",
+        "13": "W",
+        "14": "D",
+        "15": "L",
+        "16": "D"
+      }
+    }
+  ]
+}
