@@ -324,26 +324,13 @@ body {
 /* predictions */
 .predictions-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 0.25rem;
     margin-top: 0.75rem;
     min-width: 0; /* prevent overflow */
 }
 
-@media (max-width: 480px) {
-    .predictions-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 0.25rem; /* increased gap for better touch targets */
-        font-size: 12px; /* increased from 10px */
-    }
-}
 
-@media (min-width: 640px) {
-    .predictions-grid {
-        gap: 0.375rem;
-        margin-top: 1rem;
-    }
-}
 
 .prediction-badge {
     border-radius: 0.25rem;
