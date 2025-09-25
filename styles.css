@@ -164,7 +164,7 @@ body {
     padding: 0.75rem;
     transition: all 0.2s ease;
     font-size: 14px; /* increased from 12px */
-    min-height: 120px;
+    min-height: 160px;
     contain: layout;
 }
 
@@ -702,7 +702,7 @@ body {
 }
 
 .match-card-skeleton {
-    height: 120px;
+    height: 160px;
     border-radius: 0.5rem;
     border: 1px solid var(--border-color);
     background-color: var(--bg-secondary);
