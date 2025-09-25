@@ -225,7 +225,9 @@ let allMatchesData = []; // Store all matches for lazy loading
 
 function displayAllMatches() {
     const container = document.getElementById("all-matches");
-    container.innerHTML = "";
+
+    // Keep skeleton until real content loads to prevent layout shift
+    const hasSkeletons = container.querySelectorAll('.match-card-skeleton').length > 0;
 
     // get all matches
     const allMatches = [...data.matches].sort((a, b) => {
@@ -272,6 +274,11 @@ function displayAllMatches() {
     initialBatch.forEach(match => {
         renderMatchCard(match, fragment);
     });
+
+    // Clear skeleton content before adding real content
+    if (hasSkeletons) {
+        container.innerHTML = '';
+    }
 
     container.appendChild(fragment);
 
