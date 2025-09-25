@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>krunker tahminleri</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- Optimize CSS loading to reduce render blocking -->
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
     <script src="main.js" defer></script>
 </head>
 <body>
@@ -45,7 +47,7 @@
                 <div class="team-header">
                     <h2 class="team-title text-center">gs ve fb'nin maçları</h2>
                 </div>
-                <div id="all-matches" class="matches-list"></div>
+                <div id="all-matches" class="matches-list" role="main" aria-label="Football matches list"></div>
             </div>
         </div>
 

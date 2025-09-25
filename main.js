@@ -223,7 +223,7 @@ function displayAllMatches() {
     const container = document.getElementById("all-matches");
     container.innerHTML = "";
 
-        // get all matches
+    // get all matches
     const allMatches = [...data.matches].sort((a, b) => {
         const dateA = new Date(a.date + ' ' + (a.time || '00:00'));
         const dateB = new Date(b.date + ' ' + (b.time || '00:00'));
@@ -243,21 +243,25 @@ function displayAllMatches() {
         }
     });
 
-    // create display
+    // create display using document fragment for better performance
+    const fragment = document.createDocumentFragment();
     const sortedDates = Object.keys(matchesByDate).sort((a, b) => a.localeCompare(b));
+
     sortedDates.forEach(date => {
         const dayMatches = matchesByDate[date];
         const maxMatches = Math.max(dayMatches.galatasaray.length, dayMatches.fenerbahce.length);
 
         for (let i = 0; i < maxMatches; i++) {
             if (dayMatches.galatasaray[i]) {
-                renderMatchCard(dayMatches.galatasaray[i], container);
+                renderMatchCard(dayMatches.galatasaray[i], fragment);
             }
             if (dayMatches.fenerbahce[i]) {
-                renderMatchCard(dayMatches.fenerbahce[i], container);
+                renderMatchCard(dayMatches.fenerbahce[i], fragment);
             }
         }
     });
+
+    container.appendChild(fragment);
 }
 
 function getResultColor(match) {
@@ -293,7 +297,7 @@ function generateMatchHeader(match, leftTeam, rightTeam, resultColor) {
         <div class="match-header">
             <div class="team-info team-info-left">
                 <div class="team-logo-container">
-                    <img src="${leftTeam.logo}" alt="${leftTeam.name}" class="team-logo">
+                    <img src="${leftTeam.logo}" alt="${leftTeam.name}" class="team-logo" loading="lazy" width="32" height="32" decoding="async">
                 </div>
                 <div class="team-name-container">
                     <span class="team-name">${leftTeam.name}</span>
@@ -312,7 +316,7 @@ function generateMatchHeader(match, leftTeam, rightTeam, resultColor) {
             </div>
             <div class="team-info team-info-right">
                 <div class="team-logo-container">
-                    <img src="${rightTeam.logo}" alt="${rightTeam.name}" class="team-logo">
+                    <img src="${rightTeam.logo}" alt="${rightTeam.name}" class="team-logo" loading="lazy" width="32" height="32" decoding="async">
                 </div>
                 <div class="team-name-container">
                     <span class="team-name">${rightTeam.name}</span>
@@ -359,9 +363,15 @@ function renderMatchCard(match, container) {
 
     const matchHeader = generateMatchHeader(match, leftTeam, rightTeam, resultColor);
     const predictions = generatePredictions(match);
-    
+
     matchDiv.innerHTML = matchHeader + predictions;
-    container.appendChild(matchDiv);
+
+    // Support both regular containers and document fragments
+    if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+        container.appendChild(matchDiv);
+    } else {
+        container.appendChild(matchDiv);
+    }
 }
 
 // Theme functionality

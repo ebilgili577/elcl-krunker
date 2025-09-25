@@ -227,6 +227,8 @@ body {
     width: 2rem;
     height: 2rem;
     object-fit: contain;
+    aspect-ratio: 1 / 1;
+    display: block;
 }
 
 @media (min-width: 640px) {
@@ -238,6 +240,7 @@ body {
     .team-logo {
         width: 2.5rem;
         height: 2.5rem;
+        aspect-ratio: 1 / 1;
     }
 }
 
@@ -442,6 +445,7 @@ body {
     background-color: var(--bg-secondary);
     box-shadow: var(--shadow);
     font-size: 12px;
+    margin-bottom: 1.5rem;
 }
 
 .leaderboard-header {
@@ -598,7 +602,7 @@ body {
 }
 
 .player-accuracy-good {
-    color: #16a34a;
+    color: #15803d;
 }
 
 .player-accuracy-poor {
