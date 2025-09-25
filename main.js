@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 async function loadData() {
     try {
-        const res = await fetch(`data.json?t=${Date.now()}`);
+        const res = await fetch(`data.json`);
         data = await res.json(); // Store globally
 
         displayLeaderboard(data.matches, data.guesses);
@@ -221,6 +221,8 @@ function toggleLeaderboard() {
 }
 
 
+let allMatchesData = []; // Store all matches for lazy loading
+
 function displayAllMatches() {
     const container = document.getElementById("all-matches");
     container.innerHTML = "";
@@ -245,8 +247,8 @@ function displayAllMatches() {
         }
     });
 
-    // create display using document fragment
-    const fragment = document.createDocumentFragment();
+    // flatten matches for lazy loading
+    allMatchesData = [];
     const sortedDates = Object.keys(matchesByDate).sort((a, b) => a.localeCompare(b));
 
     sortedDates.forEach(date => {
@@ -255,15 +257,73 @@ function displayAllMatches() {
 
         for (let i = 0; i < maxMatches; i++) {
             if (dayMatches.galatasaray[i]) {
-                renderMatchCard(dayMatches.galatasaray[i], fragment);
+                allMatchesData.push(dayMatches.galatasaray[i]);
             }
             if (dayMatches.fenerbahce[i]) {
-                renderMatchCard(dayMatches.fenerbahce[i], fragment);
+                allMatchesData.push(dayMatches.fenerbahce[i]);
             }
         }
     });
 
+    // Load first batch immediately (first 5 matches)
+    const initialBatch = allMatchesData.slice(0, 5);
+    const fragment = document.createDocumentFragment();
+
+    initialBatch.forEach(match => {
+        renderMatchCard(match, fragment);
+    });
+
     container.appendChild(fragment);
+
+    // Set up lazy loading for remaining matches
+    if (allMatchesData.length > 5) {
+        setupLazyLoading(container);
+    }
+}
+
+function setupLazyLoading(container) {
+    let loadedCount = 5;
+    const batchSize = 3;
+    let isLoading = false;
+
+    // Create intersection observer for infinite scroll
+    const observer = new IntersectionObserver((entries) => {
+        const lastEntry = entries[0];
+
+        if (lastEntry.isIntersecting && !isLoading && loadedCount < allMatchesData.length) {
+            isLoading = true;
+            loadNextBatch(container);
+        }
+    }, {
+        rootMargin: '100px' // Load when 100px before reaching bottom
+    });
+
+    function loadNextBatch(container) {
+        const nextBatch = allMatchesData.slice(loadedCount, loadedCount + batchSize);
+        const fragment = document.createDocumentFragment();
+
+        nextBatch.forEach(match => {
+            renderMatchCard(match, fragment);
+        });
+
+        container.appendChild(fragment);
+        loadedCount += nextBatch.length;
+        isLoading = false;
+
+        // Observe the last element for next batch
+        if (loadedCount < allMatchesData.length) {
+            const lastCard = container.lastElementChild;
+            if (lastCard) {
+                observer.observe(lastCard);
+            }
+        }
+    }
+
+    // Start observing the last initially loaded card
+    const lastCard = container.lastElementChild;
+    if (lastCard) {
+        observer.observe(lastCard);
+    }
 }
 
 function getResultColor(match) {
