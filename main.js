@@ -1,5 +1,93 @@
 let data; // global data
 
+// Create thumbnail versions of images to reduce file size
+function createThumbnail(imageSrc, size = 64, quality = 0.8) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const timeout = setTimeout(() => {
+            reject(new Error('Image load timeout'));
+        }, 5000);
+
+        img.onload = () => {
+            clearTimeout(timeout);
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                if (!ctx) {
+                    reject(new Error('Canvas context not available'));
+                    return;
+                }
+
+                canvas.width = size;
+                canvas.height = size;
+
+                // Draw image scaled down to thumbnail size with smooth scaling
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(img, 0, 0, size, size);
+
+                // Convert to blob and create URL
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const thumbnailUrl = URL.createObjectURL(blob);
+                        resolve(thumbnailUrl);
+                    } else {
+                        reject(new Error('Failed to create blob'));
+                    }
+                }, 'image/webp', quality);
+            } catch (error) {
+                reject(error);
+            }
+        };
+
+        img.onerror = () => {
+            clearTimeout(timeout);
+            reject(new Error('Image failed to load'));
+        };
+
+        // Enable CORS for external images
+        img.crossOrigin = 'anonymous';
+        img.src = originalSrc;
+    });
+}
+
+// Cache for thumbnail URLs with cleanup
+const thumbnailCache = new Map();
+const MAX_CACHE_SIZE = 50;
+
+function cleanupOldThumbnails() {
+    if (thumbnailCache.size > MAX_CACHE_SIZE) {
+        const oldestEntries = Array.from(thumbnailCache.entries()).slice(0, thumbnailCache.size - MAX_CACHE_SIZE);
+        oldestEntries.forEach(([key, url]) => {
+            URL.revokeObjectURL(url);
+            thumbnailCache.delete(key);
+        });
+    }
+}
+
+async function getOptimizedImageUrl(originalSrc) {
+    if (thumbnailCache.has(originalSrc)) {
+        return thumbnailCache.get(originalSrc);
+    }
+
+    // Skip optimization for SVG files - they're already optimized and can't be canvased easily
+    if (originalSrc.toLowerCase().endsWith('.svg')) {
+        thumbnailCache.set(originalSrc, originalSrc);
+        return originalSrc;
+    }
+
+    try {
+        const thumbnailUrl = await createThumbnail(originalSrc, 64, 0.85);
+        thumbnailCache.set(originalSrc, thumbnailUrl);
+        cleanupOldThumbnails();
+        return thumbnailUrl;
+    } catch (error) {
+        console.warn('Failed to create thumbnail for:', originalSrc, error.message);
+        thumbnailCache.set(originalSrc, originalSrc); // Cache the failure to avoid retrying
+        return originalSrc; // fallback to original
+    }
+}
 
 function formatDateEuropean(dateString) {
     const date = new Date(dateString);
@@ -47,10 +135,10 @@ async function loadData() {
 
         displayLeaderboard(data.matches, data.guesses);
 
-        // display all matches in merged view
-        displayAllMatches();
-        
-        // fixed 1 second loading time
+        // display all matches in merged view with optimized images
+        await displayAllMatches();
+
+        // fixed loading time
         setTimeout(hideLoadingOverlay, 500);
     } catch (error) {
         console.error("Error loading data:", error);
@@ -211,7 +299,7 @@ function toggleLeaderboard() {
 
     if (restBoard.classList.contains("hidden")) {
         restBoard.classList.remove("hidden");
-        button.textContent = "futbol cahillerini gizle";
+        button.textContent = "futbol cahillerini     gizle";
     } else {
         restBoard.classList.add("hidden");
         button.textContent = "diğerleri";
@@ -219,7 +307,7 @@ function toggleLeaderboard() {
 }
 
 
-function displayAllMatches() {
+async function displayAllMatches() {
     const container = document.getElementById("all-matches");
     container.innerHTML = "";
 
@@ -243,25 +331,32 @@ function displayAllMatches() {
         }
     });
 
-    // create display using document fragment for better performance
-    const fragment = document.createDocumentFragment();
     const sortedDates = Object.keys(matchesByDate).sort((a, b) => a.localeCompare(b));
 
-    sortedDates.forEach(date => {
+    // First pass: Render matches immediately with original images for instant UI
+    const fragment = document.createDocumentFragment();
+    const matchElements = [];
+
+    for (const date of sortedDates) {
         const dayMatches = matchesByDate[date];
         const maxMatches = Math.max(dayMatches.galatasaray.length, dayMatches.fenerbahce.length);
 
         for (let i = 0; i < maxMatches; i++) {
             if (dayMatches.galatasaray[i]) {
-                renderMatchCard(dayMatches.galatasaray[i], fragment);
+                const matchEl = await renderMatchCardInstant(dayMatches.galatasaray[i], fragment);
+                matchElements.push({ match: dayMatches.galatasaray[i], element: matchEl });
             }
             if (dayMatches.fenerbahce[i]) {
-                renderMatchCard(dayMatches.fenerbahce[i], fragment);
+                const matchEl = await renderMatchCardInstant(dayMatches.fenerbahce[i], fragment);
+                matchElements.push({ match: dayMatches.fenerbahce[i], element: matchEl });
             }
         }
-    });
+    }
 
     container.appendChild(fragment);
+
+    // Second pass: Progressively optimize images in background
+    optimizeImagesProgressively(matchElements);
 }
 
 function getResultColor(match) {
@@ -291,8 +386,10 @@ function getCardClasses(isCompleted, resultColor) {
     return cardClasses;
 }
 
-function generateMatchHeader(match, leftTeam, rightTeam, resultColor) {
+// Instant header generation - uses original images for immediate display
+function generateMatchHeaderInstant(match, leftTeam, rightTeam, resultColor) {
     const isCompleted = match.result !== null;
+
     return `
         <div class="match-header">
             <div class="team-info team-info-left">
@@ -326,6 +423,46 @@ function generateMatchHeader(match, leftTeam, rightTeam, resultColor) {
     `;
 }
 
+async function generateMatchHeader(match, leftTeam, rightTeam, resultColor) {
+    const isCompleted = match.result !== null;
+
+    // Get optimized image URLs
+    const leftTeamLogo = await getOptimizedImageUrl(leftTeam.logo);
+    const rightTeamLogo = await getOptimizedImageUrl(rightTeam.logo);
+
+    return `
+        <div class="match-header">
+            <div class="team-info team-info-left">
+                <div class="team-logo-container">
+                    <img src="${leftTeamLogo}" alt="${leftTeam.name}" class="team-logo" loading="lazy" width="32" height="32" decoding="async">
+                </div>
+                <div class="team-name-container">
+                    <span class="team-name">${leftTeam.name}</span>
+                </div>
+            </div>
+            <div class="match-score-container">
+                <div class="match-score ${getScoreColorClass(resultColor)}">
+                    ${isCompleted ? `${match.result}` : "vs"}
+                </div>
+                <div class="match-date">
+                    ${formatDateEuropean(match.date)}
+                </div>
+                <div class="match-time">
+                    ${getTurkishWeekday(match.date)} ${match.time || "TBD"}
+                </div>
+            </div>
+            <div class="team-info team-info-right">
+                <div class="team-logo-container">
+                    <img src="${rightTeamLogo}" alt="${rightTeam.name}" class="team-logo" loading="lazy" width="32" height="32" decoding="async">
+                </div>
+                <div class="team-name-container">
+                    <span class="team-name">${rightTeam.name}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 function generatePredictions(match) {
     const isCompleted = match.result !== null;
     let html = `<div class="predictions-grid">`;
@@ -347,7 +484,8 @@ function generatePredictions(match) {
     return html;
 }
 
-function renderMatchCard(match, container) {
+// Instant render with original images - no optimization delay
+function renderMatchCardInstant(match, container) {
     const teamInfo = data.teams[match.team];
     const opponentInfo = data.teams[match.opponent];
     const isCompleted = match.result !== null;
@@ -361,12 +499,84 @@ function renderMatchCard(match, container) {
     const matchDiv = document.createElement("div");
     matchDiv.className = getCardClasses(isCompleted, resultColor);
 
-    const matchHeader = generateMatchHeader(match, leftTeam, rightTeam, resultColor);
+    const matchHeader = generateMatchHeaderInstant(match, leftTeam, rightTeam, resultColor);
     const predictions = generatePredictions(match);
 
     matchDiv.innerHTML = matchHeader + predictions;
 
-    // Support both regular containers and document fragments
+    if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+        container.appendChild(matchDiv);
+    } else {
+        container.appendChild(matchDiv);
+    }
+
+    return matchDiv;
+}
+
+// Progressive image optimization in background
+async function optimizeImagesProgressively(matchElements) {
+    for (const { match, element } of matchElements) {
+        try {
+            // Use requestIdleCallback to optimize during idle time
+            if (window.requestIdleCallback) {
+                requestIdleCallback(() => optimizeMatchImages(match, element));
+            } else {
+                // Fallback for browsers without requestIdleCallback
+                setTimeout(() => optimizeMatchImages(match, element), 0);
+            }
+        } catch (error) {
+            console.warn('Failed to optimize images for match:', match.id, error);
+        }
+    }
+}
+
+async function optimizeMatchImages(match, element) {
+    try {
+        const teamInfo = data.teams[match.team];
+        const opponentInfo = data.teams[match.opponent];
+        const homeTeam = { name: match.team, logo: teamInfo.logo };
+        const awayTeam = { name: match.opponent, logo: opponentInfo.logo };
+        const leftTeam = match.home ? homeTeam : awayTeam;
+        const rightTeam = match.home ? awayTeam : homeTeam;
+
+        // Get optimized images
+        const leftOptimized = await getOptimizedImageUrl(leftTeam.logo);
+        const rightOptimized = await getOptimizedImageUrl(rightTeam.logo);
+
+        // Update images in place
+        const leftImg = element.querySelector('.team-info-left img');
+        const rightImg = element.querySelector('.team-info-right img');
+
+        if (leftImg && leftOptimized !== leftTeam.logo) {
+            leftImg.src = leftOptimized;
+        }
+        if (rightImg && rightOptimized !== rightTeam.logo) {
+            rightImg.src = rightOptimized;
+        }
+    } catch (error) {
+        console.warn('Failed to optimize match images:', error);
+    }
+}
+
+async function renderMatchCard(match, container) {
+    const teamInfo = data.teams[match.team];
+    const opponentInfo = data.teams[match.opponent];
+    const isCompleted = match.result !== null;
+
+    const resultColor = getResultColor(match);
+    const homeTeam = { name: match.team, logo: teamInfo.logo };
+    const awayTeam = { name: match.opponent, logo: opponentInfo.logo };
+    const leftTeam = match.home ? homeTeam : awayTeam;
+    const rightTeam = match.home ? awayTeam : homeTeam;
+
+    const matchDiv = document.createElement("div");
+    matchDiv.className = getCardClasses(isCompleted, resultColor);
+
+    const matchHeader = await generateMatchHeader(match, leftTeam, rightTeam, resultColor);
+    const predictions = generatePredictions(match);
+
+    matchDiv.innerHTML = matchHeader + predictions;
+
     if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
         container.appendChild(matchDiv);
     } else {
@@ -378,22 +588,61 @@ function renderMatchCard(match, container) {
 function initializeTheme() {
     const themeToggle = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('theme') || 'light';
-    
+
     // Apply saved theme
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
-    
+
     // Add click event listener
     themeToggle.addEventListener('click', toggleTheme);
+
+    // Add keyboard support
+    themeToggle.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleTheme();
+        }
+    });
+
+    // Add global keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + Shift + D for dark mode toggle
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+            e.preventDefault();
+            toggleTheme();
+        }
+    });
 }
 
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
+
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
     updateThemeIcon(newTheme);
+
+    // Announce theme change to screen readers
+    const announcement = `Theme switched to ${newTheme} mode`;
+    announceToScreenReader(announcement);
+}
+
+function announceToScreenReader(message) {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.style.position = 'absolute';
+    announcement.style.left = '-10000px';
+    announcement.style.width = '1px';
+    announcement.style.height = '1px';
+    announcement.style.overflow = 'hidden';
+
+    document.body.appendChild(announcement);
+    announcement.textContent = message;
+
+    setTimeout(() => {
+        document.body.removeChild(announcement);
+    }, 1000);
 }
 
 function updateThemeIcon(theme) {

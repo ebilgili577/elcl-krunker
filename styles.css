@@ -94,6 +94,8 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
+    min-height: 100vh;
+    contain: layout;
 }
 
 @media (max-width: 480px) {
@@ -150,6 +152,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    min-height: 200px;
+    contain: layout;
 }
 
 /* cards */
@@ -676,6 +680,31 @@ body {
         top: 0.75rem;
         right: 0.75rem;
     }
+}
+
+/* skeleton loading */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, transparent 63%, #f0f0f0 75%);
+    background-size: 400% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+[data-theme="dark"] .skeleton {
+    background: linear-gradient(90deg, #2a2a2a 25%, transparent 37%, transparent 63%, #2a2a2a 75%);
+    background-size: 400% 100%;
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+.match-card-skeleton {
+    height: 120px;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    padding: 0.75rem;
 }
 
 /* utils */

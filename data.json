@@ -2,7 +2,7 @@
   "teams": {
     "Galatasaray": {
       "name": "Galatasaray",
-      "logo": "images/galatasaray.png"
+      "logo": "images/galatasaray.svg"
     },
     "Fenerbahçe": {
       "name": "Fenerbahçe",
@@ -14,7 +14,7 @@
     },
     "Liverpool": {
       "name": "Liverpool",
-      "logo": "images/liverpool.png"
+      "logo": "images/liverpool.svg"
     },
     "Bodø/Glimt": {
       "name": "Bodø/Glimt",
@@ -22,7 +22,7 @@
     },
     "Ajax": {
       "name": "Ajax",
-      "logo": "images/ajax.png"
+      "logo": "images/ajax.svg"
     },
     "Union SG": {
       "name": "Union SG",
@@ -34,11 +34,11 @@
     },
     "Atletico Madrid": {
       "name": "Atletico Madrid",
-      "logo": "images/atletico-madrid.png"
+      "logo": "images/atletico-madrid.svg"
     },
     "Manchester City": {
       "name": "Manchester City",
-      "logo": "images/manchester-city.png"
+      "logo": "images/manchester-city.svg"
     },
     "GNK Dinamo": {
       "name": "GNK Dinamo",

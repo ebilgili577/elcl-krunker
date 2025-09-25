@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="galatasaray ve fenerbahçe avrupa 2025 avrupa macerası için tahminler cart curt.">
     <title>krunker tahminleri</title>
     <!-- Optimize CSS loading to reduce render blocking -->
     <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -17,7 +18,7 @@
     </div>
 
     <!-- Dark theme toggle button -->
-    <button id="theme-toggle" class="theme-toggle" title="Toggle dark theme">
+    <button id="theme-toggle" class="theme-toggle" title="Toggle dark theme" aria-label="Switch between light and dark theme" tabindex="0">
         🌙
     </button>
 
@@ -47,7 +48,12 @@
                 <div class="team-header">
                     <h2 class="team-title text-center">gs ve fb'nin maçları</h2>
                 </div>
-                <div id="all-matches" class="matches-list" role="main" aria-label="Football matches list"></div>
+                <div id="all-matches" class="matches-list" role="main" aria-label="Football matches list">
+                    <!-- Initial skeleton content to prevent layout shift -->
+                    <div class="match-card-skeleton skeleton"></div>
+                    <div class="match-card-skeleton skeleton"></div>
+                    <div class="match-card-skeleton skeleton"></div>
+                </div>
             </div>
         </div>
 
