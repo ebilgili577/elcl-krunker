@@ -267,8 +267,9 @@ function displayAllMatches() {
         }
     });
 
-    // Load first batch immediately (first 5 matches)
-    const initialBatch = allMatchesData.slice(0, 5);
+
+    // Load first batch immediately (first 10 matches to test)
+    const initialBatch = allMatchesData.slice(0, 10);
     const fragment = document.createDocumentFragment();
 
     initialBatch.forEach(match => {
@@ -283,21 +284,23 @@ function displayAllMatches() {
     container.appendChild(fragment);
 
     // Set up lazy loading for remaining matches
-    if (allMatchesData.length > 5) {
+    if (allMatchesData.length > 10) {
         setupLazyLoading(container);
     }
 }
 
 function setupLazyLoading(container) {
-    let loadedCount = 5;
+    let loadedCount = 10;
     const batchSize = 3;
     let isLoading = false;
 
     // Create intersection observer for infinite scroll
     const observer = new IntersectionObserver((entries) => {
         const lastEntry = entries[0];
+        console.log('Observer triggered:', lastEntry.isIntersecting, 'isLoading:', isLoading, 'loadedCount:', loadedCount, 'totalMatches:', allMatchesData.length);
 
         if (lastEntry.isIntersecting && !isLoading && loadedCount < allMatchesData.length) {
+            console.log('Loading next batch...');
             isLoading = true;
             loadNextBatch(container);
         }

@@ -39,6 +39,8 @@ body {
     line-height: 1.5;
     font-size: 16px; /* increased base font for mobile */
     transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* loading */
@@ -95,7 +97,6 @@ body {
     margin: 0 auto;
     padding: 1rem;
     min-height: 100vh;
-    contain: layout style;
 }
 
 @media (max-width: 480px) {
@@ -153,7 +154,6 @@ body {
     flex-direction: column;
     gap: 0.75rem;
     min-height: 400px;
-    contain: layout style size;
 }
 
 /* cards */
