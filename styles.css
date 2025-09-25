@@ -225,13 +225,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
 }
 
 .team-logo {
     width: 2rem;
     height: 2rem;
     object-fit: contain;
-    aspect-ratio: 1 / 1;
     display: block;
 }
 
@@ -240,11 +241,10 @@ body {
         width: 2.5rem;
         height: 2.5rem;
     }
-    
+
     .team-logo {
         width: 2.5rem;
         height: 2.5rem;
-        aspect-ratio: 1 / 1;
     }
 }
 

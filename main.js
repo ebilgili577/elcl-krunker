@@ -1,93 +1,7 @@
 let data; // global data
 
-// Create thumbnail versions of images to reduce file size
-function createThumbnail(imageSrc, size = 64, quality = 0.8) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        const timeout = setTimeout(() => {
-            reject(new Error('Image load timeout'));
-        }, 5000);
-
-        img.onload = () => {
-            clearTimeout(timeout);
-            try {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-
-                if (!ctx) {
-                    reject(new Error('Canvas context not available'));
-                    return;
-                }
-
-                canvas.width = size;
-                canvas.height = size;
-
-                // Draw image scaled down to thumbnail size with smooth scaling
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                ctx.drawImage(img, 0, 0, size, size);
-
-                // Convert to blob and create URL
-                canvas.toBlob((blob) => {
-                    if (blob) {
-                        const thumbnailUrl = URL.createObjectURL(blob);
-                        resolve(thumbnailUrl);
-                    } else {
-                        reject(new Error('Failed to create blob'));
-                    }
-                }, 'image/webp', quality);
-            } catch (error) {
-                reject(error);
-            }
-        };
-
-        img.onerror = () => {
-            clearTimeout(timeout);
-            reject(new Error('Image failed to load'));
-        };
-
-        // Enable CORS for external images
-        img.crossOrigin = 'anonymous';
-        img.src = originalSrc;
-    });
-}
-
-// Cache for thumbnail URLs with cleanup
-const thumbnailCache = new Map();
-const MAX_CACHE_SIZE = 50;
-
-function cleanupOldThumbnails() {
-    if (thumbnailCache.size > MAX_CACHE_SIZE) {
-        const oldestEntries = Array.from(thumbnailCache.entries()).slice(0, thumbnailCache.size - MAX_CACHE_SIZE);
-        oldestEntries.forEach(([key, url]) => {
-            URL.revokeObjectURL(url);
-            thumbnailCache.delete(key);
-        });
-    }
-}
-
-async function getOptimizedImageUrl(originalSrc) {
-    if (thumbnailCache.has(originalSrc)) {
-        return thumbnailCache.get(originalSrc);
-    }
-
-    // Skip optimization for SVG files - they're already optimized and can't be canvased easily
-    if (originalSrc.toLowerCase().endsWith('.svg')) {
-        thumbnailCache.set(originalSrc, originalSrc);
-        return originalSrc;
-    }
-
-    try {
-        const thumbnailUrl = await createThumbnail(originalSrc, 64, 0.85);
-        thumbnailCache.set(originalSrc, thumbnailUrl);
-        cleanupOldThumbnails();
-        return thumbnailUrl;
-    } catch (error) {
-        console.warn('Failed to create thumbnail for:', originalSrc, error.message);
-        thumbnailCache.set(originalSrc, originalSrc); // Cache the failure to avoid retrying
-        return originalSrc; // fallback to original
-    }
-}
+// Simple image caching - just cache the URLs to avoid re-requests
+const imageCache = new Set();
 
 function formatDateEuropean(dateString) {
     const date = new Date(dateString);
@@ -135,8 +49,8 @@ async function loadData() {
 
         displayLeaderboard(data.matches, data.guesses);
 
-        // display all matches in merged view with optimized images
-        await displayAllMatches();
+        // display all matches in merged view
+        displayAllMatches();
 
         // fixed loading time
         setTimeout(hideLoadingOverlay, 500);
@@ -307,7 +221,7 @@ function toggleLeaderboard() {
 }
 
 
-async function displayAllMatches() {
+function displayAllMatches() {
     const container = document.getElementById("all-matches");
     container.innerHTML = "";
 
@@ -331,32 +245,25 @@ async function displayAllMatches() {
         }
     });
 
+    // create display using document fragment
+    const fragment = document.createDocumentFragment();
     const sortedDates = Object.keys(matchesByDate).sort((a, b) => a.localeCompare(b));
 
-    // First pass: Render matches immediately with original images for instant UI
-    const fragment = document.createDocumentFragment();
-    const matchElements = [];
-
-    for (const date of sortedDates) {
+    sortedDates.forEach(date => {
         const dayMatches = matchesByDate[date];
         const maxMatches = Math.max(dayMatches.galatasaray.length, dayMatches.fenerbahce.length);
 
         for (let i = 0; i < maxMatches; i++) {
             if (dayMatches.galatasaray[i]) {
-                const matchEl = await renderMatchCardInstant(dayMatches.galatasaray[i], fragment);
-                matchElements.push({ match: dayMatches.galatasaray[i], element: matchEl });
+                renderMatchCard(dayMatches.galatasaray[i], fragment);
             }
             if (dayMatches.fenerbahce[i]) {
-                const matchEl = await renderMatchCardInstant(dayMatches.fenerbahce[i], fragment);
-                matchElements.push({ match: dayMatches.fenerbahce[i], element: matchEl });
+                renderMatchCard(dayMatches.fenerbahce[i], fragment);
             }
         }
-    }
+    });
 
     container.appendChild(fragment);
-
-    // Second pass: Progressively optimize images in background
-    optimizeImagesProgressively(matchElements);
 }
 
 function getResultColor(match) {
@@ -386,15 +293,14 @@ function getCardClasses(isCompleted, resultColor) {
     return cardClasses;
 }
 
-// Instant header generation - uses original images for immediate display
-function generateMatchHeaderInstant(match, leftTeam, rightTeam, resultColor) {
+function generateMatchHeader(match, leftTeam, rightTeam, resultColor) {
     const isCompleted = match.result !== null;
 
     return `
         <div class="match-header">
             <div class="team-info team-info-left">
                 <div class="team-logo-container">
-                    <img src="${leftTeam.logo}" alt="${leftTeam.name}" class="team-logo" loading="lazy" width="32" height="32" decoding="async">
+                    <img src="${leftTeam.logo}" alt="${leftTeam.name}" class="team-logo" loading="lazy" width="32" height="32">
                 </div>
                 <div class="team-name-container">
                     <span class="team-name">${leftTeam.name}</span>
@@ -413,47 +319,7 @@ function generateMatchHeaderInstant(match, leftTeam, rightTeam, resultColor) {
             </div>
             <div class="team-info team-info-right">
                 <div class="team-logo-container">
-                    <img src="${rightTeam.logo}" alt="${rightTeam.name}" class="team-logo" loading="lazy" width="32" height="32" decoding="async">
-                </div>
-                <div class="team-name-container">
-                    <span class="team-name">${rightTeam.name}</span>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-async function generateMatchHeader(match, leftTeam, rightTeam, resultColor) {
-    const isCompleted = match.result !== null;
-
-    // Get optimized image URLs
-    const leftTeamLogo = await getOptimizedImageUrl(leftTeam.logo);
-    const rightTeamLogo = await getOptimizedImageUrl(rightTeam.logo);
-
-    return `
-        <div class="match-header">
-            <div class="team-info team-info-left">
-                <div class="team-logo-container">
-                    <img src="${leftTeamLogo}" alt="${leftTeam.name}" class="team-logo" loading="lazy" width="32" height="32" decoding="async">
-                </div>
-                <div class="team-name-container">
-                    <span class="team-name">${leftTeam.name}</span>
-                </div>
-            </div>
-            <div class="match-score-container">
-                <div class="match-score ${getScoreColorClass(resultColor)}">
-                    ${isCompleted ? `${match.result}` : "vs"}
-                </div>
-                <div class="match-date">
-                    ${formatDateEuropean(match.date)}
-                </div>
-                <div class="match-time">
-                    ${getTurkishWeekday(match.date)} ${match.time || "TBD"}
-                </div>
-            </div>
-            <div class="team-info team-info-right">
-                <div class="team-logo-container">
-                    <img src="${rightTeamLogo}" alt="${rightTeam.name}" class="team-logo" loading="lazy" width="32" height="32" decoding="async">
+                    <img src="${rightTeam.logo}" alt="${rightTeam.name}" class="team-logo" loading="lazy" width="32" height="32">
                 </div>
                 <div class="team-name-container">
                     <span class="team-name">${rightTeam.name}</span>
@@ -484,8 +350,7 @@ function generatePredictions(match) {
     return html;
 }
 
-// Instant render with original images - no optimization delay
-function renderMatchCardInstant(match, container) {
+function renderMatchCard(match, container) {
     const teamInfo = data.teams[match.team];
     const opponentInfo = data.teams[match.opponent];
     const isCompleted = match.result !== null;
@@ -499,83 +364,14 @@ function renderMatchCardInstant(match, container) {
     const matchDiv = document.createElement("div");
     matchDiv.className = getCardClasses(isCompleted, resultColor);
 
-    const matchHeader = generateMatchHeaderInstant(match, leftTeam, rightTeam, resultColor);
+    const matchHeader = generateMatchHeader(match, leftTeam, rightTeam, resultColor);
     const predictions = generatePredictions(match);
 
     matchDiv.innerHTML = matchHeader + predictions;
 
-    if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-        container.appendChild(matchDiv);
-    } else {
-        container.appendChild(matchDiv);
-    }
-
-    return matchDiv;
-}
-
-// Progressive image optimization in background
-async function optimizeImagesProgressively(matchElements) {
-    for (const { match, element } of matchElements) {
-        try {
-            // Use requestIdleCallback to optimize during idle time
-            if (window.requestIdleCallback) {
-                requestIdleCallback(() => optimizeMatchImages(match, element));
-            } else {
-                // Fallback for browsers without requestIdleCallback
-                setTimeout(() => optimizeMatchImages(match, element), 0);
-            }
-        } catch (error) {
-            console.warn('Failed to optimize images for match:', match.id, error);
-        }
-    }
-}
-
-async function optimizeMatchImages(match, element) {
-    try {
-        const teamInfo = data.teams[match.team];
-        const opponentInfo = data.teams[match.opponent];
-        const homeTeam = { name: match.team, logo: teamInfo.logo };
-        const awayTeam = { name: match.opponent, logo: opponentInfo.logo };
-        const leftTeam = match.home ? homeTeam : awayTeam;
-        const rightTeam = match.home ? awayTeam : homeTeam;
-
-        // Get optimized images
-        const leftOptimized = await getOptimizedImageUrl(leftTeam.logo);
-        const rightOptimized = await getOptimizedImageUrl(rightTeam.logo);
-
-        // Update images in place
-        const leftImg = element.querySelector('.team-info-left img');
-        const rightImg = element.querySelector('.team-info-right img');
-
-        if (leftImg && leftOptimized !== leftTeam.logo) {
-            leftImg.src = leftOptimized;
-        }
-        if (rightImg && rightOptimized !== rightTeam.logo) {
-            rightImg.src = rightOptimized;
-        }
-    } catch (error) {
-        console.warn('Failed to optimize match images:', error);
-    }
-}
-
-async function renderMatchCard(match, container) {
-    const teamInfo = data.teams[match.team];
-    const opponentInfo = data.teams[match.opponent];
-    const isCompleted = match.result !== null;
-
-    const resultColor = getResultColor(match);
-    const homeTeam = { name: match.team, logo: teamInfo.logo };
-    const awayTeam = { name: match.opponent, logo: opponentInfo.logo };
-    const leftTeam = match.home ? homeTeam : awayTeam;
-    const rightTeam = match.home ? awayTeam : homeTeam;
-
-    const matchDiv = document.createElement("div");
-    matchDiv.className = getCardClasses(isCompleted, resultColor);
-
-    const matchHeader = await generateMatchHeader(match, leftTeam, rightTeam, resultColor);
-    const predictions = generatePredictions(match);
-
-    matchDiv.innerHTML = matchHeader + predictions;
+    // Cache images for better performance
+    imageCache.add(leftTeam.logo);
+    imageCache.add(rightTeam.logo);
 
     if (container.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
         container.appendChild(matchDiv);
