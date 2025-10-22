@@ -104,7 +104,7 @@
     {
       "id": 4,
       "team": "Galatasaray",
-      "home": true,
+      "home": false,
       "opponent": "Ajax",
       "date": "2025-11-05",
       "time": "22:00",
@@ -113,7 +113,7 @@
     {
       "id": 5,
       "team": "Galatasaray",
-      "home": false,
+      "home": true,
       "opponent": "Union SG",
       "date": "2025-11-25",
       "time": "19:45",
@@ -122,7 +122,7 @@
     {
       "id": 6,
       "team": "Galatasaray",
-      "home": true,
+      "home": false,
       "opponent": "Monaco",
       "date": "2025-12-09",
       "time": "22:00",
@@ -131,7 +131,7 @@
     {
       "id": 7,
       "team": "Galatasaray",
-      "home": false,
+      "home": true,
       "opponent": "Atletico Madrid",
       "date": "2026-01-21",
       "time": "19:45",
@@ -140,7 +140,7 @@
     {
       "id": 8,
       "team": "Galatasaray",
-      "home": true,
+      "home": false,
       "opponent": "Manchester City",
       "date": "2026-01-28",
       "time": "22:00",
@@ -167,7 +167,7 @@
     {
       "id": 11,
       "team": "Fenerbahçe",
-      "home": false,
+      "home": true,
       "opponent": "Stuttgart",
       "date": "2025-10-23",
       "time": "19:45",
@@ -176,7 +176,7 @@
     {
       "id": 12,
       "team": "Fenerbahçe",
-      "home": true,
+      "home": false,
       "opponent": "Viktoria Plzeň",
       "date": "2025-11-06",
       "time": "22:00",
@@ -185,7 +185,7 @@
     {
       "id": 13,
       "team": "Fenerbahçe",
-      "home": false,
+      "home": true,
       "opponent": "Ferencváros",
       "date": "2025-11-27",
       "time": "19:45",
@@ -194,7 +194,7 @@
     {
       "id": 14,
       "team": "Fenerbahçe",
-      "home": true,
+      "home": false,
       "opponent": "Brann",
       "date": "2025-12-11",
       "time": "22:00",
@@ -203,7 +203,7 @@
     {
       "id": 15,
       "team": "Fenerbahçe",
-      "home": false,
+      "home": true,
       "opponent": "Aston Villa",
       "date": "2026-01-22",
       "time": "19:45",
@@ -212,7 +212,7 @@
     {
       "id": 16,
       "team": "Fenerbahçe",
-      "home": true,
+      "home": false,
       "opponent": "FCSB",
       "date": "2026-01-29",
       "time": "22:00",
