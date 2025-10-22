@@ -95,7 +95,7 @@
     {
       "id": 3,
       "team": "Galatasaray",
-      "home": false,
+      "home": true,
       "opponent": "Bodø/Glimt",
       "date": "2025-10-22",
       "time": "19:45",
