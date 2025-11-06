@@ -104,18 +104,24 @@ function isPredictionCorrect(prediction, result, isHome) {
     return prediction === actualOutcome;
 }
 
-function displayLeaderboard(matches, guesses) {
-    const stats = calculateStats(matches, guesses);
-
-    // sort by points (points descending, name ascending)
-    const sortedByPoints = [...stats].sort((a, b) => {
+function sortStatsByPoints(stats) {
+    return [...stats].sort((a, b) => {
         if (b.points !== a.points) {
             return b.points - a.points;
         }
         return a.name.localeCompare(b.name);
     });
+}
 
+function displayLeaderboard(matches, guesses) {
+    const stats = calculateStats(matches, guesses);
+    const sortedByPoints = sortStatsByPoints(stats);
     displayPointsLeaderboard(sortedByPoints);
+
+    // Calculate and display pool leaderboard
+    const poolStats = calculatePoolStats(matches, guesses);
+    const sortedPoolStats = sortStatsByPoints(poolStats);
+    displayPoolLeaderboard(sortedPoolStats);
 }
 
 function calculateStats(matches, guesses) {
@@ -145,35 +151,40 @@ function calculateStats(matches, guesses) {
     });
 }
 
-function displayPointsLeaderboard(sortedStats) {
-    const topContainer = document.getElementById("top-players");
-    const restContainer = document.getElementById("remaining-players");
+function getPositionEmoji(position) {
+    if (position === 1) return "🥇";
+    if (position === 2) return "🥈";
+    if (position === 3) return "🥉";
+    if (position === 4) return "🫃";
+    if (position === 5) return "🫏";
+    return "♿";
+}
+
+function renderLeaderboard(sortedStats, containerIds, options = {}) {
+    const { topId, restId } = containerIds;
+    const { formatPoints = (points) => points.toString() } = options;
+    
+    const topContainer = document.getElementById(topId);
+    const restContainer = document.getElementById(restId);
+
+    // If containers don't exist, skip rendering
+    if (!topContainer || !restContainer) {
+        return;
+    }
 
     topContainer.innerHTML = '';
     restContainer.innerHTML = '';
 
     sortedStats.forEach((player, index) => {
         const position = index + 1;
-        let positionEmoji = "";
-
-        if (position === 1) {
-            positionEmoji = "🥇";
-        } else if (position === 2) {
-            positionEmoji = "🥈";
-        } else if (position === 3) {
-            positionEmoji = "🥉";
-        } else if (position === 4) {
-            positionEmoji = "🫃";
-        } else if (position === 5) {
-            positionEmoji = "🫏";
-        } else {
-            positionEmoji = "♿";
-        }
+        const positionEmoji = getPositionEmoji(position);
 
         const playerDiv = document.createElement("div");
         let cardClasses = "player-card";
         if (position === 1) cardClasses += " player-card-winner";
         playerDiv.className = cardClasses;
+
+        const pointsDisplay = formatPoints(player.points);
 
         playerDiv.innerHTML = `
             <div class="player-info">
@@ -185,7 +196,7 @@ function displayPointsLeaderboard(sortedStats) {
             </div>
             <div class="player-stats">
                 <div>
-                    <div class="player-points">${player.points}</div>
+                    <div class="player-points">${pointsDisplay}</div>
                     <div class="player-points-label">puan</div>
                 </div>
                 <div>
@@ -206,10 +217,21 @@ function displayPointsLeaderboard(sortedStats) {
     });
 }
 
+function displayPointsLeaderboard(sortedStats) {
+    renderLeaderboard(sortedStats, {
+        topId: "top-players",
+        restId: "remaining-players"
+    });
+}
 
-function toggleLeaderboard() {
-    const restBoard = document.getElementById("remaining-players");
-    const button = document.getElementById("show-more-players-btn");
+
+function toggleLeaderboardGeneric(restId, buttonId) {
+    const restBoard = document.getElementById(restId);
+    const button = document.getElementById(buttonId);
+
+    if (!restBoard || !button) {
+        return;
+    }
 
     if (restBoard.classList.contains("hidden")) {
         restBoard.classList.remove("hidden");
@@ -218,6 +240,87 @@ function toggleLeaderboard() {
         restBoard.classList.add("hidden");
         button.textContent = "diğerleri";
     }
+}
+
+function toggleLeaderboard() {
+    toggleLeaderboardGeneric("remaining-players", "show-more-players-btn");
+}
+
+function calculatePoolStats(matches, guesses) {
+    const pool = guesses.length; // n = 6
+    const personPoints = {};
+    
+    // Initialize points for each person
+    guesses.forEach(person => {
+        personPoints[person.name] = 0;
+    });
+
+    // Calculate points for each match
+    matches.forEach(match => {
+        if (match.result && match.result !== "null") {
+            // Count how many betters guessed correctly (k)
+            let correctCount = 0;
+            const correctGuessers = [];
+
+            guesses.forEach(person => {
+                const prediction = person.predictions[match.id];
+                if (prediction && isPredictionCorrect(prediction, match.result, match.home)) {
+                    correctCount++;
+                    correctGuessers.push(person.name);
+                }
+            });
+
+            // If k > 0, distribute points: pool / k per correct guesser
+            if (correctCount > 0) {
+                const pointsPerCorrect = pool / correctCount;
+                correctGuessers.forEach(name => {
+                    personPoints[name] += pointsPerCorrect;
+                });
+            }
+        }
+    });
+
+    // Calculate stats for each person (similar to calculateStats)
+    return guesses.map(person => {
+        let correct = 0;
+        let total = 0;
+
+        matches.forEach(match => {
+            if (match.result && match.result !== "null") {
+                const prediction = person.predictions[match.id];
+                if (prediction) {
+                    total++;
+                    if (isPredictionCorrect(prediction, match.result, match.home)) {
+                        correct++;
+                    }
+                }
+            }
+        });
+
+        return {
+            name: person.name,
+            points: personPoints[person.name],
+            correct: correct,
+            total: total,
+            accuracy: total > 0 ? ((correct / total) * 100) : 0
+        };
+    });
+}
+
+function displayPoolLeaderboard(sortedStats) {
+    renderLeaderboard(sortedStats, {
+        topId: "pool-top-players",
+        restId: "pool-remaining-players"
+    }, {
+        formatPoints: (points) => {
+            // Format points to show decimals when needed
+            return points % 1 === 0 ? points.toFixed(0) : points.toFixed(1);
+        }
+    });
+}
+
+function togglePoolLeaderboard() {
+    toggleLeaderboardGeneric("pool-remaining-players", "pool-show-more-players-btn");
 }
 
 

@@ -454,6 +454,10 @@ body {
     margin-bottom: 1.5rem;
 }
 
+.pool-leaderboard-section {
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
 .leaderboard-header {
     display: flex;
     align-items: center;

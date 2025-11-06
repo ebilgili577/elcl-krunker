@@ -107,7 +107,7 @@
       "home": false,
       "opponent": "Ajax",
       "date": "2025-11-05",
-      "time": "22:00",
+      "time": "23:00",
       "result": "0-3"
     },
     {
@@ -116,7 +116,7 @@
       "home": true,
       "opponent": "Union SG",
       "date": "2025-11-25",
-      "time": "19:45",
+      "time": "20:45",
       "result": null
     },
     {
@@ -125,7 +125,7 @@
       "home": false,
       "opponent": "Monaco",
       "date": "2025-12-09",
-      "time": "22:00",
+      "time": "23:00",
       "result": null
     },
     {
@@ -134,7 +134,7 @@
       "home": true,
       "opponent": "Atletico Madrid",
       "date": "2026-01-21",
-      "time": "19:45",
+      "time": "20:45",
       "result": null
     },
     {
@@ -143,7 +143,7 @@
       "home": false,
       "opponent": "Manchester City",
       "date": "2026-01-28",
-      "time": "22:00",
+      "time": "23:00",
       "result": null
     },
     {
@@ -152,7 +152,7 @@
       "home": false,
       "opponent": "GNK Dinamo",
       "date": "2025-09-24",
-      "time": "22:00",
+      "time": "23:00",
       "result": "3-1"
     },
     {
@@ -161,7 +161,7 @@
       "home": true,
       "opponent": "Nice",
       "date": "2025-10-02",
-      "time": "19:45",
+      "time": "20:45",
       "result": "2-1"
     },
     {
@@ -170,7 +170,7 @@
       "home": true,
       "opponent": "Stuttgart",
       "date": "2025-10-23",
-      "time": "19:45",
+      "time": "20:45",
       "result": "1-0"
     },
     {
@@ -179,7 +179,7 @@
       "home": false,
       "opponent": "Viktoria Plzeň",
       "date": "2025-11-06",
-      "time": "22:00",
+      "time": "23:00",
       "result": null
     },
     {
@@ -188,7 +188,7 @@
       "home": true,
       "opponent": "Ferencváros",
       "date": "2025-11-27",
-      "time": "19:45",
+      "time": "20:45",
       "result": null
     },
     {
@@ -197,7 +197,7 @@
       "home": false,
       "opponent": "Brann",
       "date": "2025-12-11",
-      "time": "22:00",
+      "time": "23:00",
       "result": null
     },
     {
@@ -206,7 +206,7 @@
       "home": true,
       "opponent": "Aston Villa",
       "date": "2026-01-22",
-      "time": "19:45",
+      "time": "20:45",
       "result": null
     },
     {
@@ -215,7 +215,7 @@
       "home": false,
       "opponent": "FCSB",
       "date": "2026-01-29",
-      "time": "22:00",
+      "time": "23:00",
       "result": null
     }
   ],
