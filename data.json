@@ -74,7 +74,7 @@
     },
     "Juventus": {
       "name": "Juventus",
-      "logo": "images/juv.svg"
+      "logo": "images/juve.svg"
     },
     "Nottingham Forest": {
       "name": "Nottingham Forest",
@@ -229,7 +229,7 @@
       {
       "id": 17,
       "team": "Galatasaray",
-      "home": True,
+      "home": true,
       "opponent": "Juventus",
       "date": "2026-02-17",
       "time": "20:45",
