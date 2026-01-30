@@ -71,6 +71,14 @@
     "FCSB": {
       "name": "FCSB",
       "logo": "images/fcsb.svg"
+    },
+    "Juventus": {
+      "name": "Juventus",
+      "logo": "images/juv.svg"
+    },
+    "Nottingham Forest": {
+      "name": "Nottingham Forest",
+      "logo": "images/nf.svg"
     }
   },
   "matches": [
@@ -216,8 +224,45 @@
       "opponent": "FCSB",
       "date": "2026-01-29",
       "time": "23:00",
-      "result": "1-1"
-    }
+      "result": null
+    },
+      {
+      "id": 17,
+      "team": "Galatasaray",
+      "home": True,
+      "opponent": "Juventus",
+      "date": "2026-02-17",
+      "time": "20:45",
+      "result": null
+    },
+      {
+      "id": 18,
+      "team": "Galatasaray",
+      "home": false,
+      "opponent": "Juventus",
+      "date": "2026-02-25",
+      "time": "23:00",
+      "result": null
+    },
+      {
+      "id": 19,
+      "team": "Fenerbahçe",
+      "home": false,
+      "opponent": "Nottingham Forest",
+      "date": "2026-02-19",
+      "time": "20:45",
+      "result": null
+    },
+      {
+      "id": 20,
+      "team": "Fenerbahçe",
+      "home": false,
+      "opponent": "Nottingham Forest",
+      "date": "2026-02-26",
+      "time": "23:00",
+      "result": null
+    },
+    
   ],
   "guesses": [
     {
@@ -238,7 +283,11 @@
         "13": "W",
         "14": "L",
         "15": "L",
-        "16": "W"
+        "16": "W",
+        "17": "D",
+        "18": "D",
+        "19": "D",
+        "20": "D"
       }
     },
     {
@@ -259,7 +308,11 @@
         "13": "W",
         "14": "W",
         "15": "L",
-        "16": "W"
+        "16": "W",
+        "17": "D",
+        "18": "D",
+        "19": "D",
+        "20": "D"
       }
     },
     {
@@ -301,7 +354,11 @@
         "13": "W",
         "14": "W",
         "15": "L",
-        "16": "D"
+        "16": "D",
+        "17": "D",
+        "18": "D",
+        "19": "D",
+        "20": "D
       }
     },
     {
@@ -322,7 +379,11 @@
         "13": "W",
         "14": "D",
         "15": "L",
-        "16": "D"
+        "16": "D",
+        "17": "D",
+        "18": "D",
+        "19": "D",
+        "20": "D"
       }
     },
     {
@@ -343,7 +404,11 @@
         "13": "W",
         "14": "W",
         "15": "L",
-        "16": "D"
+        "16": "D",
+        "17": "D",
+        "18": "D",
+        "19": "D",
+        "20": "D"
       }
     }
   ]
