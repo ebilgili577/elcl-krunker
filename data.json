@@ -247,7 +247,7 @@
       {
       "id": 19,
       "team": "Fenerbahçe",
-      "home": false,
+      "home": true,
       "opponent": "Nottingham Forest",
       "date": "2026-02-19",
       "time": "20:45",
