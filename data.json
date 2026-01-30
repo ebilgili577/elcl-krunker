@@ -144,7 +144,7 @@
       "opponent": "Manchester City",
       "date": "2026-01-28",
       "time": "23:00",
-      "result": null
+      "result": "2-0"
     },
     {
       "id": 9,
@@ -216,7 +216,7 @@
       "opponent": "FCSB",
       "date": "2026-01-29",
       "time": "23:00",
-      "result": null
+      "result": "1-1"
     }
   ],
   "guesses": [
